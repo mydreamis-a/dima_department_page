@@ -1,0 +1,259 @@
+$(document).ready(function () {
+    /*모바일 높이*/
+    document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
+    $(window).resize(function () {
+        document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
+    });
+
+    new WOW(
+		{
+			mobile: false
+		}
+	).init();
+
+    $(".top_btn").click(function () {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 400);
+        return false;
+    });
+
+    $(".right_top_btn").click(function () {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 400);
+        return false;
+    });
+
+	$(window).scroll(function () {
+        if ($(this).scrollTop() > 500) {
+            $('.top_btn').addClass('show')
+            $('.right_top_btn').addClass('show')
+        } else {
+            $('.top_btn').removeClass('show');
+            $('.right_top_btn').removeClass('show');
+        }
+    });
+
+    //$("select").niceSelect(); //240617 웹표준 관련 삭제
+
+
+
+
+	/* 서브페이지 상단 메뉴 이동 */
+    $('.sub_nav button').on('click', function(){
+        $('.sub_nav button').not($(this)).removeClass('open')
+        $(this).toggleClass('open')
+
+		var btnText = $(this).attr('title')
+		if(btnText == '메뉴 이동 열기'){
+			$('.sub_nav button').not($(this)).attr('title', '메뉴 이동 열기')
+			$(this).attr('title', '메뉴 이동 닫기')
+		}else{
+			$(this).attr('title', '메뉴 이동 열기')
+		}
+    })
+
+    $('.bg_text_box.move .bg_text').marquee({
+        speed: 150,
+        gap: 30,
+        delayBeforeStart: -5000,
+        direction: 'left',
+        duplicated: true,
+        pauseOnHover: false,
+    });
+
+    $(".sub_visual .img").addClass("zoom");
+
+    if($(".dept_slide .swiper-slide").length >= 2){
+        const dept_swiper = new Swiper(".dept_slide .container", {
+            speed : 1000,
+            loop: true,
+            loopAdditionalSlides: 1,
+            spaceBetween: 0,    // 슬라이드 사이 여백
+            slidesPerView : 'auto', // 한 슬라이드에 보여줄 갯수
+            pagination: { // 호출(pager) 여부
+                el: ".swiper-pagination", //버튼을 담을 태그 설정
+                clickable: true, // 버튼 클릭 여부
+            },
+            autoplay : {
+                delay : 600000,
+                disableOnInteraction: false, // 오류안남
+            },
+        });
+
+    }else{
+
+    }
+
+    /* 임직원 리스트 */
+    var max_w=0; // 최대 넓이 구하기
+    $(".staff_list .txt li p").each(function(){
+        var w = parseInt($(this).css("width"));
+        if(max_w<w){ max_w = w; }
+    });
+
+    $(".staff_list .txt li").each(function(){ // 최대 넓이로 설정
+        $(this).children('p').css({width:max_w+20});
+    });
+
+    var max_dw=0;
+    $(".dept_cnt li strong").each(function(){
+        var sw = parseInt($(this).css("width"));
+        if(max_dw<sw){ max_dw = sw; }
+    });
+
+    $(".dept_cnt li").each(function(){ // 최대 넓이로 설정
+        $(this).children('strong').css({width:max_dw+20});
+    });
+
+    var max_dw=0;
+    $("dl.type1 dt").each(function(){
+        var dw = parseInt($(this).css("width")); 
+        if(max_dw<dw){ max_dw = dw; }
+    });
+
+    $("dl.type1 dt").each(function(){ // 최대 넓이로 설정
+        $(this).css({width:max_dw+20});
+    });
+
+    $("dl.type1 dd").each(function(){ // 최대 넓이로 설정
+        $(this).css({width: 'calc(100% - 20px - ' + max_dw + 'px)'});
+    });
+
+    var scrollingElement = document.scrollingElement;
+    var scrollWidth = window.innerWidth - scrollingElement.clientWidth
+    var root = document.querySelector(':root');
+    let styles = getComputedStyle(root);
+    styles.getPropertyValue('--scroll-width');
+    root.style.setProperty('--scroll-width', scrollWidth+'px');
+	
+	//통합검색
+	$('.search_form_wrap').find('input, button, a').attr('tabindex', '-1')
+    $('.hd_sch_btn').click(function(){
+		var schText = $(this).find('.hidden').text()
+		if(schText == '통합검색 열기'){
+			$(this).find('.hidden').text('통합검색 닫기')
+		}else{
+			$(this).find('.hidden').text('통합검색 열기')
+		}
+        
+		$('.search_form_wrap').toggleClass('show')
+		if($('.search_form_wrap').hasClass('show')){
+			$('.search_form_wrap').attr('aria-hidden', 'false')
+			$('.search_form_wrap').find('input, button, a').attr('tabindex', '0')
+			$('.search_form_wrap .search_box .input_box input').focus();
+		}else{
+			$('.search_form_wrap').attr('aria-hidden', 'true')
+			$('.search_form_wrap').find('input, button, a').attr('tabindex', '-1')
+		}
+
+		$('.search_form_wrap .tag a:last-child').keydown(function(e){
+			if(e.keyCode == "9") {
+				$('.search_form_wrap .search_box .input_box input').focus();
+				e.preventDefault();
+			}
+			if(e.keyCode == "9" && e.shiftKey) {
+				$('.search_form_wrap .tag a:last-child').prev('a').focus();
+				e.preventDefault();
+			}
+		});
+
+		$('.search_form_wrap .search_box .input_box input').keydown(function(e){
+			if(e.keyCode == "9" && e.shiftKey) {
+				$('.search_form_wrap .tag a:last-child').focus();
+				e.preventDefault();
+			}
+		});
+
+    });
+
+    $('.search_area_close').click(function(){
+        $('.search_form_wrap').removeClass('show').attr('aria-hidden', 'true')
+		$('.search_form_wrap').find('input, button, a').attr('tabindex', '-1')
+		$('.hd_sch_btn').focus()
+    });
+	
+	//공유하기
+    $('.share-btn').click(function () {
+		var shareText = $(this).find('.hidden').text()
+		if(shareText == '페이지 공유 열기'){
+			$(this).find('.hidden').text('페이지 공유 닫기')
+		}else{
+			$(this).find('.hidden').text('페이지 공유 열기')
+		}
+		
+		$('.share_area').toggleClass('on')
+        if($('.share_area').hasClass('on')){
+			$('.share_area').slideDown()
+        }else{
+			$('.share_area').slideUp()
+        }
+    })
+
+	//사이트맵
+    $('.sitemap_open_btn').click(function(){
+		$('body').css('overflow', 'hidden')
+		var firstA = $('.sitemap-list > li:first-child').find('.sitemap-2dep > li:first-child').find('.sitemap-3dep > li:first-child a');
+        $("#sitemapContent").addClass('open');
+        $("#ham_menu").addClass('open');
+		if($("#sitemapContent").hasClass('open')){
+			setTimeout(function() { firstA.focus() }, 1000);
+			//firstA.focus();
+		}
+		
+		$(firstA).keydown(function(e){
+			if(e.keyCode == "9" && e.shiftKey) {
+				$('.sitemap-close-btn').focus()
+				e.preventDefault();
+			}
+		});
+
+		/*$('.sitemap-close-btn').keydown(function(e){
+			if(e.keyCode == "9") {
+				$(firstA).focus();
+				e.preventDefault();
+			}
+			if(e.keyCode == "9" && e.shiftKey) {
+				$('.sitemap-list > li:last-child').find('a').focus();
+				e.preventDefault();
+			}
+		});*/
+
+    });
+
+    $('.sitemap-close-btn').on('click', function(){
+		$('body').css('overflow', 'visible');
+        $('#sitemapContent').removeClass('open');
+		$('#sitemap').focus();
+		//console.log('close');
+    });
+
+	$(window).scroll(function(){
+        $(".share_area").removeClass('on').slideUp();
+    });
+
+    //$('#sitemapContent').load("/dima_site/inc/sitemap.html");
+    //$('#ham_menu').load("/dima_site/inc/ham_menu.html");
+    //$('#header').load("/dima_site/inc/header.html");
+    //$('#footer').load("/dima_site/inc/footer.html");
+
+});
+
+function moveToSite(){
+	//if(this.value) window.open(this.value);
+	var site = $("#movSite option:selected").val();
+	window.open(site);
+}
+
+/*
+$("head").append("    <meta property=\"og:type\" content=\"website\" />\n" +
+    "    <meta property=\"og:site_name\" content=\"Dima\" />\n" +
+    "    <meta property=\"og:title\" content=\"DIma 동아방송예술대학교\" />\n" +
+    "    <meta property=\"og:description\" content=\"현장에서 빛나는 별, 동아방송예술대학교.\" />\n" +
+    "    <link href=\"/dima_site//inc/css/common.css\" rel=\"stylesheet\">\n" +
+    "    <meta property=\"og:image\" content=\"https://pub.soijeong.com/dima_site/inc/img/diam_og.jpg\" />" +
+    "    <meta property=\"og:url\" content=\""+location.href+"\" />");
+
+*/
+

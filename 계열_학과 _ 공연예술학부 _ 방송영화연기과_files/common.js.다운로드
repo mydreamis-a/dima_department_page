@@ -1,0 +1,842 @@
+//공통값
+var loadingYn = 'Y';
+
+//* LNB Navigation */
+function activeLNB(id, cnt) {
+	for(num=1; num<=parseInt(cnt); num++) {
+		$("#Lm"+num).css("visibility", "hidden"); 
+	}
+	$("#"+id).css("visibility", "visible"); //해당 ID만 보임
+}
+function onblueLNB(id) {
+	$("#"+id).css("visibility", "hidden");
+}  
+
+/* image rollover */
+$(document).ready(function() {
+   $("img.rollover").mouseover(function() {
+	 $(this).attr("src", $(this).attr("src").replace("_off","_on")); 
+   });
+   $("img.rollover").mouseout(function() {
+	 $(this).attr("src", $(this).attr("src").replace("_on", "_off"));
+   }); 
+});
+
+
+function getCookie(strName) {
+	var strArg = new String(strName + "=");	
+	var nArgLen, nCookieLen, nEnd;
+	var i = 0, j;	
+	nArgLen    = strArg.length;
+	nCookieLen = document.cookie.length;	
+	if(nCookieLen > 0) {	
+		while(i < nCookieLen) {		
+			j = i + nArgLen;			
+			if(document.cookie.substring(i, j) == strArg) {			
+				nEnd = document.cookie.indexOf (";", j);				
+				if(nEnd == -1) nEnd = document.cookie.length;				
+				return unescape(document.cookie.substring(j, nEnd));			 
+			}			
+			i = document.cookie.indexOf(" ", i) + 1;
+			if (i == 0) break;
+		}
+	}	
+	return("");
+}
+
+function setCookie( name, value, expiredays ) {
+	var todayDate = new Date();
+	todayDate.setDate( todayDate.getDate() + expiredays );
+	document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+}
+
+function deleteCookie(cookieName) {
+	var expireDate = new Date();    
+	//어제 날짜를 쿠키 소멸 날짜로 설정한다.
+	expireDate.setDate( expireDate.getDate() - 1 );
+	document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString() + "; path=/";
+}
+
+function closeWinPop(getID, dd){ 
+	if ($('#popWin'+getID).is(':checked') == true) {
+		setCookie('WP'+getID, "done" ,dd );
+	}
+	window.close();
+}
+function closeLayerPop(getID, dd){ 
+	if ($('#popLayer'+getID).is(':checked') == true) {
+		setCookie('LP'+getID, "done" ,dd );
+	}
+	$("#layer_popup"+getID).hide();
+}
+
+
+//레이어 팝업 열기
+function openLayer(IdName, tpos, lpos){
+	var pop = document.getElementById(IdName);
+	pop.style.display = "block";
+	pop.style.top = tpos + "px";
+	pop.style.left = lpos + "px";
+}
+
+//레이어 팝업 닫기
+function closeLayer(IdName){
+	var pop = document.getElementById(IdName);
+	pop.style.display = "none";
+}
+
+//체크박스 공통함수
+function checkToggle(chkid, chknm) {
+	if ($('#'+chkid).is(':checked')==true) {
+		$('input:checkbox[id^='+chknm+']').prop('checked',true);
+	} else {
+		$('input:checkbox[id^='+chknm+']').prop('checked',false);
+	}
+
+}
+
+
+/*sns 연동 관련*/
+function pstTwitter(msg,url) {
+	var href = "http://twitter.com/home?status=" + encodeURIComponent(msg) + " " + encodeURIComponent(url);
+	var a = window.open(href, 'twitter', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+function pstMe2Day(msg,url,tag) {
+	var href = "http://me2day.net/posts/new?new_post[body]=" + encodeURIComponent(msg) + " " + encodeURIComponent(url) + "&new_post[tags]=" + encodeURIComponent(tag);
+	var a = window.open(href, 'me2Day', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+function pstFaceBook(msg,url, tag, img) {
+	//var href = "http://www.facebook.com/sharer.php?u=" + encodeURIComponent(url) + "&t=" + encodeURIComponent(msg) +"&i="+ encodeURIComponent(tag);
+	var href="";
+	href = "http://www.facebook.com/share.php?s=100&p[url]="+ encodeURIComponent(url) 
+               +"&p[images][0]="+ encodeURIComponent(img) 
+               +"&p[title]="+ encodeURIComponent(msg) 
+               +"&p[summary]="+encodeURIComponent(tag);
+    //href = href.split("#").join("%23");
+    
+	//href = encodeURI(href);
+	//alert(href);
+
+	var a = window.open(href, 'facebook', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+
+function pstYozmDaum(link,prefix,parameter) {
+	var href = "http://yozm.daum.net/api/popup/prePost?link=" + encodeURIComponent(link) + "&prefix=" + encodeURIComponent(prefix);
+	var a = window.open(href, 'yozm', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+
+function pstTwitterMobile(msg,url) {
+	var href = "http://twitter.com/intent/tweet?p__g=i__n&text=" + encodeURIComponent(msg) + " " + encodeURIComponent(url);
+	var a = window.open(href, 'twitter', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+function pstFaceBookMobile(msg,url, tag, img) {
+	//var href = "http://www.facebook.com/sharer.php?u=" + encodeURIComponent(url) + "&t=" + encodeURIComponent(msg) +"&i="+ encodeURIComponent(tag);
+	var href="";
+	href = "http://m.facebook.com/sharer.php?p__g=i__n&s=100&u="+ encodeURIComponent(url);
+    //href = href.split("#").join("%23");
+
+	//href = encodeURI(href);
+	//alert(href);
+
+	var a = window.open(href, 'facebook', 'width=466, height=356');
+	if ( a ) {
+		a.focus();
+	}
+}
+
+function snsCon(g, msg, url, tag, img) {
+	if (g=="tw") {
+		pstTwitter(msg,url);
+	} else if (g=="fb") {
+		pstFaceBook(msg,url, tag, img);
+	} else if (g=="mt") {
+		pstMe2Day(msg,url,tag);
+	} else if (g=="yz") {
+		pstYozmDaum(url,msg, '')
+	}
+}
+function snsConMobile(g, msg, url, tag, img) {
+	if (g=="tw") {
+		pstTwitterMobile(msg,url);
+	} else if (g=="fb") {
+		pstFaceBookMobile(msg,url, tag, img);
+	}
+}
+
+//behindBg 레이어 팝업 열기
+$(document).ready(function() {
+   
+});
+function popConfig(){
+	 $(".btn_view_open").click(view_layerOpen);
+	 $(".btn_view_close").click(view_layerClose);
+	 $(".behindBg").click(view_layerClose);
+}
+function view_layerOpen(){
+	 $("#layer_view").css("display","block");
+		 var tx = ($(window).width()-$("#layer_view .pop_contents").width())/2;
+		 var ty = ($(window).height()-$("#layer_view .pop_contents").height())/2;
+	 $("#layer_view .pop_contents").css({left:tx+"px",top:ty+"px"});
+	 $("body").css("overflow","hidden");
+}
+function view_layerClose(){
+	 $("#layer_view").css("display","none");
+	 $("body").css("overflow","auto");
+}
+
+function regChk(f, ty){
+	var msg='';
+	if (ty=='kor') {
+		regexp = /^[\ㄱ-ㅎ ㅏ-ㅣ 가-힣\s]+$/;
+		msg = '한글만';
+	} else if (ty=='num') {
+		regexp = /^[0-9]+$/;
+		msg = '숫자만';
+	} else if (ty=='eng') {
+		regexp = /^[a-zA-Z\s]+$/;
+		msg = '영문만';
+	} else if (ty=='numeng') {
+		regexp = /^[a-zA-Z0-9]+$/;
+		msg = '숫자와 영문만';
+	} else if (ty=='koreng') {
+		regexp = /^[가-힣a-zA-Z]+$/;
+		msg = '한글과 영문만';
+	}
+	v = $('#'+f).val();
+	if( !regexp.test(v) ) {
+		if (event.keyCode==8 || event.keyCode==9 || event.keyCode==37 || event.keyCode==39 || event.keyCode==46 ) {
+		} else {
+			alert(msg+"입력하세요");
+			$('#'+f).val('');
+		}
+	}
+	/*
+	if((event.keyCode < 12592) || (event.keyCode > 12687)){
+		alert("한글만 입력이 가능합니다.");
+		//f = '';
+		event.returnValue = false
+	}
+	*/
+}
+
+function fnCheckPassword(upw) {
+	regexp = /^[a-zA-Z0-9]{6,20}$/;
+    if(!regexp.test(upw)) { 
+        alert('비밀번호는 숫자와 영문자 조합으로 6~12자리를 사용해야 합니다.'); 
+        return;
+    }
+  
+    var chk_num = $('#'+upw).val().search(/[0-9]/g); 
+    var chk_eng = $('#'+upw).val().search(/[a-z]/ig); 
+    if(chk_num < 0 || chk_eng < 0) { 
+        alert('비밀번호는 숫자와 영문자를 혼용하여야 합니다.'); 
+		$('#'+upw).val('');
+		$('#'+upw).focus();
+        return;
+    }
+    if(/(\w)\1\1\1/.test($('#'+upw).val())) {
+        alert('비밀번호에 같은 문자를 4번 이상 사용하실 수 없습니다.'); 
+		$('#'+upw).val('');
+		$('#'+upw).focus();
+        return;
+    }
+    return;
+} 
+
+//다음 주소검색
+function daumZipSearch(f1, f2, f3, f4) {
+	new daum.Postcode({
+		oncomplete: function(data) {
+			document.getElementById(f1).value = data.postcode1;
+			document.getElementById(f2).value = data.postcode2;			
+			//document.getElementById(f3).value = data.address;
+
+			//전체 주소에서 연결 번지 및 ()로 묶여 있는 부가정보를 제거하고자 할 경우,
+			//아래와 같은 정규식을 사용해도 된다. 정규식은 개발자의 목적에 맞게 수정해서 사용 가능하다.
+			var addr = data.address.replace(/(\s|^)\(.+\)$|\S+~\S+/g, '');
+			document.getElementById(f3).value = addr;
+
+			document.getElementById(f4).focus();
+		}
+	}).open();
+}
+//다음 주소검색
+function daumZipSearch2(f1, f2, f3, f4, f5) {
+	new daum.Postcode({
+		oncomplete: function(data) {
+			document.getElementById(f1).value = data.postcode1;
+			document.getElementById(f2).value = data.postcode2;			
+			document.getElementById(f5).value = data.zonecode;
+
+			//전체 주소에서 연결 번지 및 ()로 묶여 있는 부가정보를 제거하고자 할 경우,
+			//아래와 같은 정규식을 사용해도 된다. 정규식은 개발자의 목적에 맞게 수정해서 사용 가능하다.
+			var addr = data.roadAddress.replace(/(\s|^)\(.+\)$|\S+~\S+/g, '');
+			document.getElementById(f3).value = addr;
+
+			document.getElementById(f4).focus();
+		}
+	}).open();
+}
+
+//날짜 기간설정 (1주일/한달/3개월)
+//v : 구분(w, m, 3m)
+function setDate(sdate, edate, v) {
+	var eD = $('#'+edate).val();
+	var today;
+	var year;
+	var month;
+	var day;
+
+	if (eD=='') {
+		today = new Date();
+		year = today.getFullYear();
+		month = today.getMonth()+1;
+		day = today.getDate();
+	} else {
+		var eDSplit = eD.split('-');
+		year = eDSplit[0];
+		month = parseInt(eDSplit[1]);
+		day = parseInt(eDSplit[2]);
+	}
+	if (month<10) {
+		month = '0'+month;
+	}
+	if (day<10) {
+		day = '0'+day;
+	}
+
+	var curD = year+'-'+month+'-'+day;
+
+	$('#'+edate).val(curD);
+
+	var resultDate;
+	if (v=='w') {
+		resultDate = new Date(year, month-1, day-7);
+	} else if (v=='m') {
+		resultDate = new Date(year, month-2, day);
+	} else if (v=='3m') {
+		resultDate = new Date(year, month-4, day);
+	}
+
+	year = resultDate.getFullYear();
+	month = resultDate.getMonth()+1;
+	day = resultDate.getDate();
+
+	if (month<10) {
+		month = '0'+month;
+	}
+	if (day<10) {
+		day = '0'+day;
+	}
+	var resD = year+'-'+month+'-'+day;
+	$('#'+sdate).val(resD);
+}
+
+//숫자콤마
+function comma(str) {
+    str = String(str);
+    return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+}
+
+//콤마풀기
+function uncomma(str) {
+    str = String(str);
+    return str.replace(/[^\d]+/g, '');
+}
+
+//글자수 제한 체크 
+function len_chk(txtid, len, lenchk) {  
+	var txtLength = $('#'+txtid).val().length; 
+
+	if(txtLength > len){  
+		alert("글자수는 "+len+"자로 제한됩니다.!");  
+		$('#'+txtid).val($('#'+txtid).val().substring(0,len));  
+		$('#'+txtid).focus();  
+	} 
+	if (lenchk!='') {
+		$('#'+lenchk).text(txtLength+'/'+len+' bytes');
+	}
+} 
+
+function regChk2(f, ty){
+	var msg='';
+	if (ty=='kor') {
+		regexp = /^[\ㄱ-ㅎ ㅏ-ㅣ 가-힣\s]+$/;
+		msg = '한글만';
+	} else if (ty=='num') {
+		regexp = /^[0-9]+$/;
+		msg = '숫자만';
+	} else if (ty=='eng') {
+		regexp = /^[a-zA-Z\s]+$/;
+		msg = '영문만';
+	} else if (ty=='numeng') {
+		regexp = /^[a-zA-Z0-9]+$/;
+		msg = '숫자와 영문만';
+	} else if (ty=='koreng') {
+		regexp = /^[가-힣a-zA-Z]+$/;
+		msg = '한글과 영문만';
+	}
+	v = $('#'+f).val();
+
+	if( !regexp.test(v) ) {
+		alert(msg+"입력하세요");
+		$('#'+f).val('');
+	}
+	return;
+
+}
+
+function regChk(f, ty){
+	var msg='';
+	if (ty=='kor') {
+		regexp = /^[\ㄱ-ㅎ ㅏ-ㅣ 가-힣\s]+$/;
+		msg = '한글만';
+	} else if (ty=='num') {
+		regexp = /^[0-9]+$/;
+		msg = '숫자만';
+	} else if (ty=='eng') {
+		regexp = /^[a-zA-Z\s]+$/;
+		msg = '영문만';
+	} else if (ty=='numeng') {
+		regexp = /^[a-zA-Z0-9]+$/;
+		msg = '숫자와 영문만';
+	} else if (ty=='koreng') {
+		regexp = /^[가-힣a-zA-Z]+$/;
+		msg = '한글과 영문만';
+	}
+	v = $('#'+f).val();
+	//alert(event.keyCode);
+	if( !regexp.test(v) ) {
+		if (event.keyCode==8 || event.keyCode==13 || event.keyCode==9 || event.keyCode==37 || event.keyCode==39 || event.keyCode==46 || event.keyCode==93 || event.keyCode==229 || event.keyCode==116 ) {
+			event.returnValue = false;
+		} else {
+			alert(msg+"입력하세요");
+			$('#'+f).val('');
+			event.returnValue = false;
+		}
+	}
+	event.returnValue = false;
+	/*
+	if((event.keyCode < 12592) || (event.keyCode > 12687)){
+		alert("한글만 입력이 가능합니다.");
+		//f = '';
+		event.returnValue = false
+	}
+	*/
+}
+
+//사용자 출력 함수
+function printUser(divid) {
+
+	$("#"+divid).print({
+		addGlobalStyles : '/inc/css/CMS.css',
+		stylesheet : '/inc/css/CMS.css',
+		rejectWindow : true,
+		noPrintSelector : ".no-print",
+		iframe : true,
+		append : null,
+		prepend : null
+	});
+}
+
+//관리자 출력 함수
+function printMng(divid) {
+
+	$("#"+divid).print({
+		addGlobalStyles : '<?=AdminPath?>/inc/css/sub.css',
+		stylesheet : '<?=AdminPath?>/inc/css/board.css',
+		rejectWindow : true,
+		noPrintSelector : ".no-print",
+		iframe : true,
+		append : null,
+		prepend : null
+	});
+}
+
+//이미지 확장자 체크
+function fnImgExtCheck(id){
+	var strFile = $("#"+id).val();
+	var ext = strFile.split('.').pop().toLowerCase();
+	if($.inArray(ext, ['gif','jpg','jpeg','png']) == -1) {
+		return false;
+	} else{
+		return true;
+	}
+}
+//셀렉트박스의 선택값 가져오기
+function fnSelectGetItem(md, id){
+	var retval;
+	if(md=='value'){
+		retval = $("#"+id+" option:selected").val();
+	} else {
+		retval = $("#"+id+" option:selected").text();
+	}	
+	return retval;
+}
+
+//브라우저 체크
+function getVersionIE () { 
+	var word; 
+	var version = "N/A"; 
+
+	var agent = navigator.userAgent.toLowerCase(); 
+	var name = navigator.appName; 
+
+	// IE old version ( IE 10 or Lower ) 
+	if ( name == "Microsoft Internet Explorer" ) word = "msie "; 
+
+	else { 
+		// IE 11 
+		if ( agent.search("trident") > -1 ) word = "trident/.*rv:"; 
+
+		// IE 12  ( Microsoft Edge ) 
+		else if ( agent.search("edge/") > -1 ) word = "edge/"; 
+	} 
+
+	var reg = new RegExp( word + "([0-9]{1,})(\\.{0,}[0-9]{0,1})" ); 
+
+	if (  reg.exec( agent ) != null  ) version = RegExp.$1 + RegExp.$2; 
+	return version; 
+} 
+
+// 아이디값으로 중앙정렬 레이어 팝업 띄우기(고정형)
+function fnOpenLayer(Id){
+//  var layerId = '#'+Id+' .popup_in';
+	$('#'+Id).css('display','block');
+	var topPos = ($(window).height() - $('#'+Id+' .popup_in .con').outerHeight()) / 2;
+	var leftPos = ($(window).width() - $('#'+Id+' .popup_in .con').outerWidth()) / 2;
+	//alert(topPos);
+	$('#'+Id+' .popup_in').css({'left':leftPos+'px' , 'top':topPos+'px'});
+	$('html body').css('overflow','hidden');
+}
+
+//아이디값으로 레이어 팝업닫기
+function fnClose(Id){
+	$('#'+Id).css('display','none');
+	$('html body').css('overflow','auto');
+}
+
+//등록파일 크기 체크
+function chkFileSize(id) {
+	if(window.ActiveXObject){
+		var fso = new ActiveXObject("Scripting.FileSystemObject");
+		var filepath = document.getElementById(id).value; // input 아이디 "file1"
+		var thefile = fso.getFile(filepath);
+		sizeinbytes = thefile.size;
+	}else{
+		sizeinbytes = document.getElementById(id).files[0].size;
+	}
+	var fSExt = new Array('Bytes', 'KB', 'MB', 'GB');
+	var fSize = sizeinbytes;
+	var i=0;
+
+	/*
+	while(fSize>900){
+		fSize/=1024;
+		i++;
+	}
+	*/
+
+	//mb로 반환
+	fSize /= 1024;
+	fSize /= 1024;
+	i = i+2;
+
+	fSize = (Math.round(fSize*100)/100);//+' '+fSExt[i]; 
+	//alert(fSize);
+	return fSize;
+}
+
+//등록파일 확장자 체크
+function chkFileExt(id) {
+	var fileName = $("#"+id).val();
+	if(fileName) {
+		var fileArr  = fileName.split(".");
+		var len      = fileArr.length - 1;
+		var ext      = fileArr[len];
+		ext = ext.toLowerCase();
+		var extArr  = new Array("hwp", "hwpx", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "jpg", "gif", "png", "bmp", "pdf"); 
+		if( extArr.indexOf(ext) == -1 ) {
+		  alert("등록할 수 없는 파일입니다. 관리자에게 문의하세요.");
+		  return false;
+		}
+	}
+	return true;
+}
+
+//등록파일 확장자 체크
+function chkFileExt2(id) {
+	var fileName = $("#"+id).val();
+	if(fileName) {
+		var fileArr  = fileName.split(".");
+		var len      = fileArr.length - 1;
+		var ext      = fileArr[len];
+		ext = ext.toLowerCase();
+		var extArr  = new Array("jpg", "gif", "png", "bmp"); 
+		if( extArr.indexOf(ext) == -1 ) {
+		  alert("등록할 수 없는 파일입니다. 관리자에게 문의하세요.");
+		  return false;
+		}
+	}
+	return true;
+}
+
+//파일 확장자 검사
+function chkFileSize2(id) {
+	if( $("#"+id).val() ) {
+	  var fileSize = chkFileSize(id);
+	  if(fileSize > 10) {
+		alert("파일의 크기가 제한된 용량 크기보다 큽니다. 관리자에게 문의하세요.");
+		return false;
+	  }
+	}
+	return true;
+}
+
+//이전년도 10년, 다음년도 5년 범위로 데이트피커 설정
+function setDatepicker(id) {
+  $(id).datepicker({
+	//yearRange : "c-10:c+5",
+  });
+  //backspace 나 delete키 입력시 내용 지움
+  $(id).keydown(function(e) {
+    if(e.keyCode == 46 || e.keyCode == 8) {
+      $(this).val('');
+    }
+	e.preventDefault();
+  });
+}
+
+function setTimepicker(id) {
+  $(id).timepicker({
+    step : 5,
+    timeFormat : "H:i"
+  });
+  //backspace 나 delete키 입력시 내용 지움
+  $(id).keydown(function(e) {
+    if(e.keyCode == 46 || e.keyCode == 8) {
+      $(this).val('');
+    }
+	e.preventDefault();
+  });
+}
+
+function chkTimeFormat(id) {
+  var time = $("#"+id).val();
+  time = time.replace(":", "");
+  if($.isNumeric(time) == false) {
+	alert("숫자만 입력하세요.");
+	$("#"+id).focus();
+	return false;
+  }
+  return true;
+}
+
+function surveyFileDown(idx) {
+	location.href = "/inc/down.php?fileidx="+idx;
+}
+
+function fnPrint(id){
+	$("#"+id).printThis();
+}
+
+//화면 캡쳐
+function fnCapture(divID) { 
+	window.open("", "winCapture","width=900,height=600,top=0,left=0,scrollbars=yes"); // 이미지를 윈도우 팝업으로..
+	$("#logoImg").show();
+	html2canvas($("#"+divID), {
+		onrendered: function(canvas) { 
+			var img = canvas.toDataURL("image/png");
+			$("#imgData").val(img);	
+			document.captureFrm.submit();
+			$("#logoImg").hide();
+		}
+	}); 
+} 
+
+//비밀번호 유효성 검사
+function fnCheckPassWord2(pw){
+	pw = pw.split(" ").join("");
+	var engB_Cnt = 0;
+	var engS_Cnt = 0;
+	var spcW_Cnt = 0;
+	var numW_Cnt = 0;
+	var word_Cnt = 0;
+	var engB = "BABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var engS = "babcdefghijklmnopqrstuvwxyz";
+	var spcW = "_-_!@#$%^&*";
+	var numW = "10123456789";
+	var checkWord = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_!@#$%^&*";
+	var pwLen = pw.length;
+  
+	for(i=0;i<pwLen;i++) {
+		if(checkWord.indexOf(pw.substring(i,i+1))<0) 
+		{
+		  alert("비밀번호의 허용된 문자가 아닙니다. 다시 입력해 주십시오.");
+		  return false;
+		} else {
+		  if(engB.indexOf(pw.substring(i,i+1)) != -1) {
+			engB_Cnt = 1;
+		  }
+		  if(engS.indexOf(pw.substring(i,i+1)) != -1) {
+			engS_Cnt = 1;
+		  }
+		  if(spcW.indexOf(pw.substring(i,i+1)) != -1) {
+			spcW_Cnt = 1;
+		  }
+		  if(numW.indexOf(pw.substring(i,i+1)) != -1) {
+			numW_Cnt = 1;
+		  }
+		}
+	}
+
+	word_Cnt = parseInt(engB_Cnt) + parseInt(engS_Cnt) + parseInt(spcW_Cnt) + parseInt(numW_Cnt);
+	
+	//3가지 조합 이상일 경우
+	if(word_Cnt > 2) {
+	  //8자리 이상 입력
+	  if(pwLen < 8) {
+	    alert("8자리 이상 입력하세요.");
+	    return false;
+	  }
+	//2가지 조합 이상일 경우
+	} else if(word_Cnt == 2) {
+	  //10자리 이상 입력
+	  if(pwLen < 10) {
+	    alert("10자리 이상 입력하세요.");
+	    return false;
+	  }
+	} else {
+	  alert("비밀번호의 조합을 확인하세요.");
+	  return false;
+	}
+
+	return true;
+}
+
+//엔터 체크
+function chkEnter(event) {
+	if(event.keyCode==13) { document.searchFrm.submit(); return false; }
+}
+
+// 숫자만 입력 가능
+function fnOnlyNumber(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^0-9]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 숫자,영문만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyNumber2(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+        }
+    });
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// 영어 / 숫자만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyEngNumber(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 영어 / 숫자만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyEngNumberSpace(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^a-z0-9 ]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 숫자 / - / +만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyNumberDash(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^0-9-+]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 숫자 / - / +만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyNumberDash2(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^0-9-+()]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 숫자 , 만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyNumberComma(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^0-9,]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 영어 / 숫자 / 특수문자만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyEngNumberSpecial(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^a-z0-9-@_.,]/gi,''));
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// 영어 / 숫자 / 특수문자만 입력 가능 (값 리셋)
+///////////////////////////////////////////////////////////////////////////
+function fnOnlyEngNumberSpecial2(objID){
+	$(objID).keyup(function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+            $(this).val(inputVal.replace(/[^a-z0-9-@!#$%^&*()|~'`,._ ]/gi,''));
+        }
+    });
+}
